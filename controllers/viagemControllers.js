@@ -90,3 +90,35 @@ module.exports.editarViagem = async(req,res)=>{
     });
     }
 };
+
+module.exports.excluirViagem = async(req,res)=>{
+try {
+    const { id } = req.params; // pega o ID da URL
+
+    // verifica se o ID foi informado
+    if (!id) {
+      return res.status(400).json({ erro: 'ID da viagem não informado.' });
+    }
+
+    // tenta encontrar e excluir o registro
+    const viagemRemovida = await Viagem.findByIdAndDelete(id);
+
+    // se não encontrou
+    if (!viagemRemovida) {
+      return res.status(404).json({ erro: 'Viagem não encontrada.' });
+    }
+
+    // sucesso
+    return res.status(200).json({
+      mensagem: 'Viagem excluída com sucesso!',
+      viagemRemovida
+    });
+
+  } catch (erro) {
+    console.error('Erro ao excluir viagem:', erro);
+    return res.status(500).json({
+      erro: 'Erro interno ao tentar excluir a viagem.',
+      detalhes: erro.message
+    });
+  }
+};
