@@ -122,3 +122,17 @@ try {
     });
   }
 };
+
+// controllers/viagemController.js
+module.exports.listarViagensComTrechos = async (req, res) => {
+  try {
+    const viagens = await Viagem.find()
+      .sort({ createdAt: -1 })
+      .populate('trechos'); // ← aqui é o ponto chave
+
+    res.status(200).json(viagens);
+  } catch (error) {
+    console.error('❌ Erro ao listar viagens com trechos:', error);
+    res.status(500).json({ erro: 'Erro ao carregar viagens com trechos' });
+  }
+};

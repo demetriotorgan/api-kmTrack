@@ -18,4 +18,13 @@ const ViagemSchema = new mongoose.Schema({
   timestamps: true
 });
 
+ViagemSchema.virtual('trechos', {
+  ref: 'Trecho',
+  localField: '_id',
+  foreignField: 'viagemId'
+});
+
+ViagemSchema.set('toObject', { virtuals: true });
+ViagemSchema.set('toJSON', { virtuals: true });
+
 module.exports = mongoose.model("Viagem", ViagemSchema);
