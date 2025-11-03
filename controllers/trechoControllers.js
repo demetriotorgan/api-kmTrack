@@ -94,7 +94,7 @@ module.exports.atualizarTrecho = async(req,res)=>{
         $set: {
           origem: dadosAtualizados.origem,
           destino: dadosAtualizados.destino,
-          distanciaPercorrida: dadosAtualizados.distancia, // aqui o campo é 'distancia' no payload
+          distanciaPercorrida: dadosAtualizados.distanciaPercorrida, // aqui o campo é 'distancia' no payload
           odometro: dadosAtualizados.odometro,
           // caso queira permitir atualizar mais campos, adicione aqui
         },
