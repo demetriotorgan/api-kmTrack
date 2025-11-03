@@ -121,4 +121,36 @@ module.exports.atualizarTrecho = async(req,res)=>{
       error: error.message,
     });
   }
-}
+};
+
+module.exports.excluirTrecho = async (req, res) => {
+  try {
+    const { id } = req.params; // id do trecho recebido pela rota
+
+    // Verifica se o ID foi informado
+    if (!id) {
+      return res.status(400).json({ message: "ID do trecho não fornecido." });
+    }
+
+    // Tenta encontrar e deletar o trecho
+    const trechoRemovido = await Trecho.findByIdAndDelete(id);
+
+    // Caso não exista um trecho com esse ID
+    if (!trechoRemovido) {
+      return res.status(404).json({ message: "Trecho não encontrado." });
+    }
+
+    // Sucesso
+    res.status(200).json({
+      message: "🗑️ Trecho excluído com sucesso!",
+      trecho: trechoRemovido, // opcional: retorna o que foi removido
+    });
+
+  } catch (error) {
+    console.error("Erro ao excluir trecho:", error);
+    res.status(500).json({
+      message: "Erro ao excluir trecho.",
+      error: error.message,
+    });
+  }
+};
