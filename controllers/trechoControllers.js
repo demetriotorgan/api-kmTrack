@@ -80,3 +80,45 @@ try {
     res.status(500).json({msg: "Erro ao lisar trechos"});
     }
 };
+
+//controller para ataualizar trecho
+module.exports.atualizarTrecho = async(req,res)=>{
+    try {
+    const { id } = req.params; // id do trecho
+    const dadosAtualizados = req.body; // payload vindo do front-end
+
+    // Atualiza o trecho com base no ID
+    const trechoAtualizado = await Trecho.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          origem: dadosAtualizados.origem,
+          destino: dadosAtualizados.destino,
+          distanciaPercorrida: dadosAtualizados.distancia, // aqui o campo é 'distancia' no payload
+          odometro: dadosAtualizados.odometro,
+          // caso queira permitir atualizar mais campos, adicione aqui
+        },
+      },
+      { new: true } // retorna o documento atualizado
+    );
+
+    // Caso o ID não exista
+    if (!trechoAtualizado) {
+      console.log('Id Inválido')
+      return res.status(404).json({ message: 'Trecho não encontrado.' });
+    }
+
+    // Sucesso
+    res.status(200).json({
+      message: 'Trecho atualizado com sucesso!',
+      trecho: trechoAtualizado,
+    });
+
+  } catch (error) {
+    console.error('Erro ao atualizar trecho:', error);
+    res.status(500).json({
+      message: 'Erro ao atualizar trecho.',
+      error: error.message,
+    });
+  }
+}
