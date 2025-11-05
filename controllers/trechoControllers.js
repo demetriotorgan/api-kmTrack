@@ -198,3 +198,51 @@ exports.atualizarTempoMovimento = async (req, res) => {
     });
   }
 };
+
+// controllers/trechoController.js
+exports.adicionarParada = async (req, res) => {
+  try {
+    const { id } = req.params; // ID do trecho
+    const novaParada = req.body;
+
+    // Verificação básica de campos obrigatórios
+    if (!novaParada.tempoInicialParada || !novaParada.tempoFinalParada) {
+      return res.status(400).json({ message: "Horário inicial e final são obrigatórios." });
+    }
+
+    // Conversão para Date e cálculo de diferença para validação
+    const inicio = new Date(novaParada.tempoInicialParada);
+    const fim = new Date(novaParada.tempoFinalParada);
+    const diffMin = Math.max(0, Math.floor((fim - inicio) / 60000));
+
+    // Verificação de coerência — diferença muito discrepante
+    if (Math.abs(diffMin - novaParada.tempoDeParada) > 2) {
+      console.warn(`⚠️ Diferença inconsistente detectada no trecho ${id}: calculado ${diffMin}min, recebido ${novaParada.tempoDeParada}min.`);
+      // Corrige o valor, mantendo segurança sem quebrar o fluxo
+      novaParada.tempoDeParada = diffMin;
+    }
+
+    // Atualiza o trecho com push na lista de paradas
+    const trechoAtualizado = await Trecho.findByIdAndUpdate(
+      id,
+      { $push: { paradas: novaParada } },
+      { new: true }
+    );
+
+    if (!trechoAtualizado) {
+      return res.status(404).json({ message: "Trecho não encontrado." });
+    }
+
+    res.status(200).json({
+      message: "Parada adicionada com sucesso.",
+      trecho: trechoAtualizado
+    });
+
+  } catch (error) {
+    console.error("Erro ao adicionar parada:", error);
+    res.status(500).json({
+      message: "Erro interno ao registrar parada.",
+      error: error.message
+    });
+  }
+};
