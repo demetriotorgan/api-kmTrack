@@ -154,3 +154,47 @@ module.exports.excluirTrecho = async (req, res) => {
     });
   }
 };
+
+// Atualiza o tempo inicial ou final de movimento de um trecho
+exports.atualizarTempoMovimento = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { tempoInicialMovimento, tempoFinalMovimento } = req.body;
+
+    // Verifica qual campo veio no body
+    let updateData = {};
+
+    if (tempoInicialMovimento) {
+      updateData.tempoInicialMovimento = new Date(tempoInicialMovimento);
+    } else if (tempoFinalMovimento) {
+      updateData.tempoFinalMovimento = new Date(tempoFinalMovimento);
+    } else {
+      return res.status(400).json({
+        message: "Nenhum campo de tempo informado (esperado: tempoInicioMovimento ou tempoFinalMovimento)",
+      });
+    }
+
+    // Faz a atualização parcial
+    const trechoAtualizado = await Trecho.findByIdAndUpdate(
+      id,
+      { $set: updateData },
+      { new: true }
+    );
+
+    if (!trechoAtualizado) {
+      return res.status(404).json({ message: "Trecho não encontrado" });
+    }
+
+    res.json({
+      message: "Tempo atualizado com sucesso",
+      trecho: trechoAtualizado,
+    });
+
+  } catch (error) {
+    console.error("Erro ao atualizar tempo de movimento:", error);
+    res.status(500).json({
+      message: "Erro interno ao atualizar tempo de movimento",
+      error: error.message,
+    });
+  }
+};
