@@ -36,13 +36,17 @@ const TrechoSchema = new mongoose.Schema({
   destino: { type: String, required: true },
   distanciaPercorrida: { type: Number, default: 0 },
   distanciaAtual:{type:Number, default:0},
+  
   tempoEmMovimento: { type: Number, default: 0 },
-  tempoInicialMovimento: {type: Number, default: 0},
-  tempoFinalMovimento:{type:Number, default:0},
+  tempoInicialMovimento: {type: Date, default: null},
+  tempoFinalMovimento:{type:Date, default:null},
+  
   tempoDeParadas: { type: Number, default: 0 },
   tempoInicialParada:{type:Number, default:0},
   tempoFinalParada:{type:Number, default:0},
+  
   odometro: { type: Number, default: 0 },
+  
   abastecimentos: { type: [AbastecimentoSchema], default: [] },
   pedagios: { type: [PedagioSchema], default: [] },
   paradas: { type: [ParadaSchema], default: [] },
