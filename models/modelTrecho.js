@@ -19,7 +19,9 @@ const PedagioSchema = new mongoose.Schema({
 
 const ParadaSchema = new mongoose.Schema({
   tipo: { type: String, enum: ['descanso', 'alimentacao', 'abastecimento', 'pernoite', 'atrativo'], default: 'alimentacao' },
-  tempo: { type: Number, default: 0 },
+  tempoDeParada: { type: Number, default: 0 },
+  tempoInicialParada:{type:Date, default:null},
+  tempoFinalParada:{type:Date, default:null},
   local: { type: String, default: 'Estrada' },
   observacao: { type: String, default: '' }
 }, { _id: false });
@@ -40,11 +42,7 @@ const TrechoSchema = new mongoose.Schema({
   tempoEmMovimento: { type: Number, default: 0 },
   tempoInicialMovimento: {type: Date, default: null},
   tempoFinalMovimento:{type:Date, default:null},
-  
-  tempoDeParadas: { type: Number, default: 0 },
-  tempoInicialParada:{type:Number, default:0},
-  tempoFinalParada:{type:Number, default:0},
-  
+    
   odometro: { type: Number, default: 0 },
   
   abastecimentos: { type: [AbastecimentoSchema], default: [] },
