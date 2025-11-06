@@ -8,7 +8,6 @@ router.put('/atualizar-trecho/:id', atualizarTrecho);
 router.delete('/deletar-trecho/:id', excluirTrecho);
 router.put('/atualizar-tempo/:id', atualizarTempoMovimento);
 router.post('/salvar-parada/:id', adicionarParada);
-router.put('/atualizar-parada/:id', atualizarParada);
-
+router.put('/atualizar-parada/:paradaId', atualizarParada);
 module.exports = router;
 
