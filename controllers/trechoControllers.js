@@ -246,3 +246,55 @@ exports.adicionarParada = async (req, res) => {
     });
   }
 };
+
+//Atualizar parada
+module.exports.atualizarParada = async(req,res)=>{
+ try {
+    const { paradaId } = req.params;
+    const {
+      tipo,
+      tempoDeParada,
+      tempoInicialParada,
+      tempoFinalParada,
+      local,
+      observacao
+    } = req.body;
+
+    if (!paradaId) {
+      return res.status(400).json({ message: "ID da parada é obrigatório." });
+    }
+
+    // Segurança básica: valida campos obrigatórios
+    if (!tempoInicialParada || !tempoFinalParada) {
+      return res.status(400).json({ message: "Horários de início e término são obrigatórios." });
+    }
+
+    // Atualiza o subdocumento dentro do array "paradas"
+    const trechoAtualizado = await Trecho.findOneAndUpdate(
+      { "paradas._id": paradaId },
+      {
+        $set: {
+          "paradas.$.tipo": tipo,
+          "paradas.$.tempoDeParada": tempoDeParada,
+          "paradas.$.tempoInicialParada": tempoInicialParada,
+          "paradas.$.tempoFinalParada": tempoFinalParada,
+          "paradas.$.local": local,
+          "paradas.$.observacao": observacao
+        }
+      },
+      { new: true }
+    );
+
+    if (!trechoAtualizado) {
+      return res.status(404).json({ message: "Parada não encontrada." });
+    }
+
+    return res.status(200).json({
+      message: "Parada atualizada com sucesso!",
+      trecho: trechoAtualizado
+    });
+  } catch (error) {
+    console.error("Erro ao atualizar parada:", error);
+    return res.status(500).json({ message: "Erro interno ao atualizar parada.", error });
+  }
+}
