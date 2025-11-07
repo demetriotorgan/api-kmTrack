@@ -247,54 +247,41 @@ exports.adicionarParada = async (req, res) => {
   }
 };
 
-//Atualizar parada
-module.exports.atualizarParada = async(req,res)=>{
- try {
+//Excluir registro de parada
+module.exports.excluirParada = async (req, res) => {
+  try {
     const { paradaId } = req.params;
-    const {
-      tipo,
-      tempoDeParada,
-      tempoInicialParada,
-      tempoFinalParada,
-      local,
-      observacao
-    } = req.body;
 
-    if (!paradaId) {
-      return res.status(400).json({ message: "ID da parada é obrigatório." });
+    console.log("🗑️ Tentando excluir parada com ID:", paradaId);
+
+    // 1️⃣ Encontrar o trecho que contém essa parada
+    const trecho = await Trecho.findOne({ "paradas._id": paradaId });
+
+    if (!trecho) {
+      console.log("❌ Nenhum trecho contém essa paradaId:", paradaId);
+      return res.status(404).json({ msg: "Parada não encontrada em nenhum trecho" });
     }
 
-    // Segurança básica: valida campos obrigatórios
-    if (!tempoInicialParada || !tempoFinalParada) {
-      return res.status(400).json({ message: "Horários de início e término são obrigatórios." });
-    }
+    console.log("✅ Trecho encontrado:", trecho._id);
 
-    // Atualiza o subdocumento dentro do array "paradas"
-    const trechoAtualizado = await Trecho.findOneAndUpdate(
-      { "paradas._id": paradaId },
-      {
-        $set: {
-          "paradas.$.tipo": tipo,
-          "paradas.$.tempoDeParada": tempoDeParada,
-          "paradas.$.tempoInicialParada": tempoInicialParada,
-          "paradas.$.tempoFinalParada": tempoFinalParada,
-          "paradas.$.local": local,
-          "paradas.$.observacao": observacao
-        }
-      },
-      { new: true }
+    // 2️⃣ Remover a parada do array usando $pull
+    await Trecho.updateOne(
+      { _id: trecho._id },
+      { $pull: { paradas: { _id: paradaId } } }
     );
 
-    if (!trechoAtualizado) {
-      return res.status(404).json({ message: "Parada não encontrada." });
-    }
+    console.log("🧹 Parada removida com sucesso:", paradaId);
+
+    // 3️⃣ Retornar o trecho atualizado (opcional)
+    const trechoAtualizado = await Trecho.findById(trecho._id);
 
     return res.status(200).json({
-      message: "Parada atualizada com sucesso!",
-      trecho: trechoAtualizado
+      msg: "Parada excluída com sucesso",
+      trechoAtualizado
     });
+
   } catch (error) {
-    console.error("Erro ao atualizar parada:", error);
-    return res.status(500).json({ message: "Erro interno ao atualizar parada.", error });
+    console.error("❌ Erro ao excluir parada:", error);
+    res.status(500).json({ msg: "Erro ao excluir parada", error });
   }
-}
+};

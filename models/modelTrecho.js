@@ -18,10 +18,14 @@ const PedagioSchema = new mongoose.Schema({
 });
 
 const ParadaSchema = new mongoose.Schema({
+  _id: {
+    type: mongoose.Schema.Types.ObjectId,
+    default: () => new mongoose.Types.ObjectId()
+  },
   tipo: { type: String, enum: ['descanso', 'alimentacao', 'abastecimento', 'pernoite', 'atrativo'], default: 'alimentacao' },
   tempoDeParada: { type: Number, default: 0 },
-  tempoInicialParada:{type:Date, default:null},
-  tempoFinalParada:{type:Date, default:null},
+  tempoInicialParada:{ type: Date, default: null },
+  tempoFinalParada:{ type: Date, default: null },
   local: { type: String, default: 'Estrada' },
   observacao: { type: String, default: '' }
 });
