@@ -8,6 +8,7 @@ const cors = require('cors');
 const viagemRoutes = require('./routes/viagemRoutes');
 const trechoRoutes = require('./routes/trechoRoutes');
 const paradasRoutes = require('./routes/paradasRoutes');
+const abastecimentoRoutes = require('./routes/abastecimentosRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -27,7 +28,7 @@ mongoose
     .then(()=>console.log('Conectado ao banco ao MongoDB'))
     .catch((err)=>console.log(err));
 
-app.use('/', viagemRoutes, trechoRoutes, paradasRoutes);
+app.use('/', viagemRoutes, trechoRoutes, paradasRoutes, abastecimentoRoutes);
 app.get('/', (req, res)=>{
     res.status(200).send('🚀 API de Viagens está online e funcional!');
 });
