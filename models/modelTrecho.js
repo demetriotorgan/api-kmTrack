@@ -1,13 +1,17 @@
 const mongoose = require('mongoose');
 
 const AbastecimentoSchema = new mongoose.Schema({
+  _id: {
+    type: mongoose.Schema.Types.ObjectId,
+    default: () => new mongoose.Types.ObjectId()
+  },
   odometro: { type: Number, default: 0 },
   litros: { type: Number, default: 0 },
   valorTotal: { type: Number, default: 0 },
   precoPorLitro: { type: Number, default: 0 },
   cidade: { type: String, default: 'Estrada' },
   data: { type: Date, default: Date.now },
-  hora: { type: String, default: '' },
+  hora: { type: Date, default: null },
   tipo: { type: String, enum: ['inicial', 'reposicao', 'final'], default: 'inicial' }
 });
 
