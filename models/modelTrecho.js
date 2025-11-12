@@ -16,6 +16,10 @@ const AbastecimentoSchema = new mongoose.Schema({
 });
 
 const PedagioSchema = new mongoose.Schema({
+  _id: {
+    type: mongoose.Schema.Types.ObjectId,
+    default: () => new mongoose.Types.ObjectId()
+  },
   valor: { type: Number, default: 0 },
   local: { type: String, default: 'Estrada' },
   data: { type: Date, default: Date.now }
