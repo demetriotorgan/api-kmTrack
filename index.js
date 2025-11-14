@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
 const cors = require('cors');
+const connectDB = require('./config/db')
 
 
 //Rotas
@@ -24,10 +25,8 @@ app.use((req,res, next)=>{
   });
 
 
-mongoose
-    .connect(process.env.DATABASE_URL)
-    .then(()=>console.log('Conectado ao banco ao MongoDB'))
-    .catch((err)=>console.log(err));
+// 👉 GARANTE QUE O BANCO CONECTA ANTES DAS ROTAS
+connectDB();
 
 app.use('/', viagemRoutes, trechoRoutes, paradasRoutes, abastecimentoRoutes,pedagios);
 app.get('/', (req, res)=>{
