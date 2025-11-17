@@ -24,12 +24,13 @@ app.use((req,res, next)=>{
     next();    
   });
 
-
-// 👉 GARANTE QUE O BANCO CONECTA ANTES DAS ROTAS
-connectDB();
+mongoose
+  .connect(process.env.DATABASE_URL)
+  .then(()=>console.log('Conectado ao MongoDB!!'))
+  .catch((err)=>console.log(err));
 
 app.use('/', viagemRoutes, trechoRoutes, paradasRoutes, abastecimentoRoutes,pedagios);
-app.get('/', (req, res)=>{
+app.get('/', (req, res)=>{;
     res.status(200).send('🚀 API de Viagens está online e funcional!');
 });
 
